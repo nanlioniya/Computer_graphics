@@ -79,7 +79,6 @@ void loadModels() {
   m->modelMatrix = glm::scale(m->modelMatrix, glm::vec3(0.4f, 0.4f, 0.4f));
   ctx.models.push_back(m);
 
-
   m = Model::fromObjectFile("../assets/models/Mugs/Models/Mug_obj3.obj");
   m->textures.push_back(createTexture("../assets/models/Mugs/Textures/Mug_C.png"));
   m->textures.push_back(createTexture("../assets/models/Mugs/Textures/Mug_T.png"));
@@ -105,22 +104,23 @@ void loadModels() {
    *           what this means to set m->textures correctly
    */
   
-  
-    std::vector<float> p = {-1.0, 0.0, -1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, -1.0};
+  // vertex position (4 vertices, 3 elements each)
+  std::vector<float> p = {-1.0, 0.0, -1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, -1.0};
+  // normal (4 vertices, 3 elements each)
   std::vector<float> n = {0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0};
+  // texture coordinate (4 vertices, 2 elements each)
   std::vector<float> t = {0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 2.0, 0.0};
 
   m = new Model();
   m->positions.insert(m->positions.end(), p.begin(), p.end());
   m->normals.insert(m->normals.end(), n.begin(), n.end());
   m->texcoords.insert(m->texcoords.end(), t.begin(), t.end());
-  m->textures.push_back(createTexture("../assets/models/Wood_maps/AT_Wood.jpg"));
-  m->modelMatrix = glm::scale(m->modelMatrix, glm::vec3(4.096f, 1.0f, 2.56f));
   m->numVertex = 4;
   m->drawMode = GL_QUADS;
+  m->modelMatrix = glm::scale(m->modelMatrix, glm::vec3(4.096f, 1.0f, 2.56f));
+
+  m->textures.push_back(createTexture("../assets/models/Wood_maps/AT_Wood.jpg"));
   ctx.models.push_back(m);
-  
-  
 }
 
 void setupObjects() {
@@ -139,9 +139,7 @@ void setupObjects() {
   (*ctx.objects.rbegin())->textureIndex = 1;
 
   ctx.objects.push_back(new Object(2, glm::translate(glm::identity<glm::mat4>(), glm::vec3(5, 0, 3))));
-  
 
-  
   
   // TODO#3-2: Put the plane into scene
   ctx.objects.push_back(new Object(3, glm::translate(glm::identity<glm::mat4>(), glm::vec3(4.096, 0.0, 2.56))));

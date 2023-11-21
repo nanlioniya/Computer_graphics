@@ -53,24 +53,14 @@ uniform PointLight pl;
 uniform Spotlight sl;
 
 
-
-
-
 void main() {
-vec4 dAmbient = vec4(0.0);
+
+    // directional light
+    vec4 dAmbient = vec4(0.0);
     vec4 dDiffuse = vec4(0.0);
     vec4 dSpecular = vec4(0.0);
-    vec4 pAmbient = vec4(0.0);
-    vec4 pDiffuse = vec4(0.0);
-    vec4 pSpecular = vec4(0.0);
-    vec4 sAmbient = vec4(0.0);
-    vec4 sDiffuse = vec4(0.0);
-    vec4 sSpecular = vec4(0.0);
-    vec4 cAmbient = vec4(0.0);
-    vec4 cDiffuse = vec4(0.0);
-    vec4 cSpecular = vec4(0.0);
-    
-    if (dl.enable == 1) { // directional light
+
+    if (dl.enable == 1) {
         // ambient
         dAmbient = vec4(dl.lightColor * material.ambient, 1.0);
 
@@ -85,7 +75,13 @@ vec4 dAmbient = vec4(0.0);
         dSpecular = vec4(dl.lightColor * material.specular, 1.0) * pow(max(dsCoef, 0.0), material.shininess);
     }
 
-    if (pl.enable == 1) { // point light
+    
+    // point light
+    vec4 pAmbient = vec4(0.0);
+    vec4 pDiffuse = vec4(0.0);
+    vec4 pSpecular = vec4(0.0);
+    
+    if (pl.enable == 1) {
         // attenuation
         float dist = length(FragPos - pl.position);
         float attenuation = 1.0 / (pl.constant + pl.linear * dist + pl.quadratic * dist * dist);
@@ -104,6 +100,13 @@ vec4 dAmbient = vec4(0.0);
         float psCoef = dot(normalize(reflect_dir), normalize(view_dir));
         pSpecular = vec4(pl.lightColor * material.specular, 1.0) * pow(max(psCoef, 0.0), material.shininess) * attenuation;
     }
+
+
+
+    // spot light
+    vec4 sAmbient = vec4(0.0);
+    vec4 sDiffuse = vec4(0.0);
+    vec4 sSpecular = vec4(0.0);
 
     if (sl.enable == 1) {
         // attenuation
@@ -127,6 +130,12 @@ vec4 dAmbient = vec4(0.0);
             sSpecular = vec4(sl.lightColor * material.specular, 1.0) * pow(max(ssCoef, 0.0), material.shininess) * attenuation;
         }
     }
+
+    
+    // combined result
+    vec4 cAmbient = vec4(0.0);
+    vec4 cDiffuse = vec4(0.0);
+    vec4 cSpecular = vec4(0.0);
 
     cAmbient = dAmbient + pAmbient + sAmbient;
     cDiffuse = dDiffuse + pDiffuse + sDiffuse;

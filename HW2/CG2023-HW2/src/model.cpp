@@ -57,48 +57,86 @@ Model* Model::fromObjectFile(const char* obj_file) {
 
   
 
-    std::string line = "";
+  std::string line = "";
   std::string prefix = "";
   std::stringstream ss;
   std::vector<float> v, vt, vn;
 
+  /* one line at a time*/
   while (getline(ObjFile, line)) {
     ss.clear();
     ss.str(line);
     ss >> prefix;
+
+    /* first character specifies data*/
+
+    /*vertex*/
     if (prefix == "v") {
       float vx, vy, vz;
       ss >> vx >> vy >> vz;
       v.push_back(vx);
       v.push_back(vy);
       v.push_back(vz);
-    } else if (prefix == "vt") {
+    } 
+    /*texture coordinate*/
+    else if (prefix == "vt") {
       float vtx, vty;
       ss >> vtx >> vty;
       vt.push_back(vtx);
       vt.push_back(vty);
-    } else if (prefix == "vn") {
+
+    } 
+    /*normal*/
+    else if (prefix == "vn") {
       float vnx, vny, vnz;
       ss >> vnx >> vny >> vnz;
       vn.push_back(vnx);
       vn.push_back(vny);
       vn.push_back(vnz);
-    } else if (prefix == "f") {
+    } 
+    /*face*/
+    else if (prefix == "f") {
       for (int i = 0; i < 3; i++) {
         std::string p;
         ss >> p;
         int vi, vti, vni;
         face_parser(p, vi, vti, vni);
+
+        /*vertex*/
         m->positions.push_back(v[(vi - 1) * 3]);
         m->positions.push_back(v[(vi - 1) * 3 + 1]);
         m->positions.push_back(v[(vi - 1) * 3 + 2]);
-        m->texcoords.push_back(vt[(vti - 1) * 2]);
-        m->texcoords.push_back(vt[(vti - 1) * 2 + 1]);
+        /*normal*/
         m->normals.push_back(vn[(vni - 1) * 3]);
         m->normals.push_back(vn[(vni - 1) * 3 + 1]);
         m->normals.push_back(vn[(vni - 1) * 3 + 2]);
+        /*texture coordinate*/
+        m->texcoords.push_back(vt[(vti - 1) * 2]);
+        m->texcoords.push_back(vt[(vti - 1) * 2 + 1]);
+        
         m->numVertex++;
       }
+      
+      std::string p;
+      if (ss >> p) {
+        int vi, vti, vni;
+        face_parser(p, vi, vti, vni);
+
+        /*vertex*/
+        m->positions.push_back(v[(vi - 1) * 3]);
+        m->positions.push_back(v[(vi - 1) * 3 + 1]);
+        m->positions.push_back(v[(vi - 1) * 3 + 2]);
+        /*normal*/
+        m->normals.push_back(vn[(vni - 1) * 3]);
+        m->normals.push_back(vn[(vni - 1) * 3 + 1]);
+        m->normals.push_back(vn[(vni - 1) * 3 + 2]);
+        /*texture coordinate*/
+        m->texcoords.push_back(vt[(vti - 1) * 2]);
+        m->texcoords.push_back(vt[(vti - 1) * 2 + 1]);
+
+        m->numVertex++;
+      }
+      
     }
   }
 

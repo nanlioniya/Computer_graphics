@@ -40,7 +40,7 @@ out vec3 FragPos;
 //              in light.cpp rather than in shaders
 
 void main() {
-gl_Position = Projection * ViewMatrix * ModelMatrix * vec4(position, 1.0);
+  gl_Position = Projection * ViewMatrix * ModelMatrix * vec4(position, 1.0);
   TexCoord = texCoord;
   FragPos = vec3(ModelMatrix * vec4(position, 1.0f));
   Normal = vec3(ModelNormalMatrix * vec4(normal, 1.0));
