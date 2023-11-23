@@ -111,14 +111,19 @@ void loadModels() {
   // texture coordinate (4 vertices, 2 elements each)
   std::vector<float> t = {0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 2.0, 0.0};
 
+// create model
   m = new Model();
+  // set model attributes: pos, normal, texcoord
   m->positions.insert(m->positions.end(), p.begin(), p.end());
   m->normals.insert(m->normals.end(), n.begin(), n.end());
   m->texcoords.insert(m->texcoords.end(), t.begin(), t.end());
+
+  // set model attributes: numVertex, drawMode, modelMatrix
   m->numVertex = 4;
   m->drawMode = GL_QUADS;
+  // size: 8.096 X 5.12
   m->modelMatrix = glm::scale(m->modelMatrix, glm::vec3(4.096f, 1.0f, 2.56f));
-
+  
   m->textures.push_back(createTexture("../assets/models/Wood_maps/AT_Wood.jpg"));
   ctx.models.push_back(m);
 }

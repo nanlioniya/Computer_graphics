@@ -61,14 +61,15 @@ void main() {
     vec4 dSpecular = vec4(0.0);
 
     if (dl.enable == 1) {
-        // ambient
+        
+        // ambient: Ia = I_ambient * Ka
         dAmbient = vec4(dl.lightColor * material.ambient, 1.0);
 
-        //diffuse
+        // diffuse: Id = I · Kd · (L · N)
         float ddCoef = dot(normalize((-1) * dl.direction), normalize(Normal));
         dDiffuse = vec4(dl.lightColor * material.diffuse, 1.0) * max(ddCoef, 0.0);
         
-        // specular
+        // specular: Is = I · Ks · (R · V) ^ n
         vec3 reflect_dir = reflect(dl.direction, normalize(Normal));
         vec3 view_dir = viewPos - FragPos;
         float dsCoef = dot(normalize(reflect_dir), normalize(view_dir));
@@ -82,19 +83,19 @@ void main() {
     vec4 pSpecular = vec4(0.0);
     
     if (pl.enable == 1) {
-        // attenuation
+        // attenuation: 1/(constant + linear * dist + exp * dist * dist)
         float dist = length(FragPos - pl.position);
         float attenuation = 1.0 / (pl.constant + pl.linear * dist + pl.quadratic * dist * dist);
 
-        // ambient
+        // ambient: Ia = I_ambient * Ka * attenuation
         pAmbient = vec4(pl.lightColor * material.ambient, 1.0) * attenuation;
 
-        // diffuse
+        // diffuse: Id = I · Kd · (L · N) * attenuation
         vec3 light_dir = FragPos - pl.position;
         float pdCoef = dot(normalize((-1) * light_dir), normalize(Normal));
         pDiffuse = vec4(pl.lightColor * material.diffuse, 1.0) * max(pdCoef, 0.0) * attenuation;
 
-        // specular
+        // specular: Is = I · Ks · (R · V) ^ n * attenuation
         vec3 reflect_dir = reflect(light_dir, normalize(Normal));
         vec3 view_dir = viewPos - FragPos;
         float psCoef = dot(normalize(reflect_dir), normalize(view_dir));
@@ -109,21 +110,22 @@ void main() {
     vec4 sSpecular = vec4(0.0);
 
     if (sl.enable == 1) {
-        // attenuation
+        // attenuation: 1/(constant + linear * dist + exp * dist * dist)
         float dist = length(FragPos - sl.position);
         float attenuation = 1.0 / (sl.constant + sl.linear * dist + sl.quadratic * dist * dist);
 
-        // ambient
+        // ambient: Ia = I_ambient * Ka * attenuation
         sAmbient = vec4(sl.lightColor * material.ambient, 1.0) * attenuation;
 
         // check if position is in the spotlight
         vec3 light_dir = FragPos - sl.position;
         if (dot(normalize(light_dir), normalize(sl.direction)) > sl.cutOff) {
-            // diffuse
+            
+            // diffuse: Id = I · Kd · (L · N) * attenuation
             float sdCoef = dot(normalize((-1) * light_dir), normalize(Normal));
             sDiffuse = vec4(sl.lightColor * material.diffuse, 1.0) * max(sdCoef, 0.0) * attenuation;
 
-            // specular
+            // specular: Is = I · Ks · (R · V) ^ n * attenuation
             vec3 reflect_dir = reflect(light_dir, normalize(Normal));
             vec3 view_dir = viewPos - FragPos;
             float ssCoef = dot(normalize(reflect_dir), normalize(view_dir));
